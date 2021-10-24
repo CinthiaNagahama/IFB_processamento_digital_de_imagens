@@ -34,7 +34,7 @@ def get_args(argv):
         elif opt in ("-m", "--mensagem"):
             text_file = arg
         elif opt in ("-b", "--plano-bits"):
-            bits_plan = arg
+            bits_plan = int(arg)
     # print(get_args)
     # print(og_image, text_file, bits_plan, out_image)
     return [og_image, text_file, bits_plan, out_image]
