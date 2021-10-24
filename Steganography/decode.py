@@ -1,34 +1,10 @@
 import sys
-import cv2
-import numpy as np
 from command_line_arguments_decode import get_args, print_help
+from utils import convert_to_binary, convert_to_ascii, get_image
 
 # Para teste, use:
 # python3 decode.py -i butterfly_modificado.png -a decodified_text.txt -b 0
 # python3 decode.py -i stinkbug_modificado.png -a decodified_text.txt -b 0
-
-
-def get_image(image_name):
-    image = cv2.imread(image_name)
-
-    if(isinstance(image, np.ndarray)):
-        return image
-    raise FileNotFoundError("Imagem não encontrada")
-
-
-def convert_to_binary(message):
-    if type(message) == str:
-        return ''.join([format(ord(letter), "08b") for letter in message])
-    elif type(message) == bytes or type(message) == np.ndarray:
-        return [format(i, "08b") for i in message]
-    elif type(message) == int or type(message) == np.uint8:
-        return format(message, "08b")
-    else:
-        raise TypeError("Tipo de dado não aceito")
-
-
-def convert_to_ascii(value):
-    return chr(int(value, 2))
 
 
 def find_message(image, bits_plan):
@@ -65,12 +41,9 @@ def decode():
     mod_image = get_image(image_name)
 
     message = find_message(mod_image, bits_plan)
-    print("final message: " + message)
 
     with open(text_file_name, "w") as f:
         f.write(message)
-
-    return
 
 
 if __name__ == "__main__":
