@@ -1,5 +1,4 @@
 import getopt
-import sys
 
 
 def print_help():
@@ -16,17 +15,18 @@ def print_help():
 def get_args(argv):
     og_image = ''
     text_file = ''
-    bits_plan = 0
+    bits_plan = ''
     out_image = ''
+
     try:
         opts, _ = getopt.getopt(argv, "he:s:m:b:", [
                                 "help", "imagem-entrada=", "imagem-saida=", "mensagem=", "plano-bits="])
     except getopt.GetoptError:
         raise SystemExit(print_help())
+
     for opt, arg in opts:
         if opt in ("-h", "--help"):
-            print_help()
-            sys.exit()
+            raise SystemExit(print_help())
         elif opt in ("-e", "--imagem-entrada"):
             og_image = arg
         elif opt in ("-s", "--imagem-saida"):
@@ -35,6 +35,7 @@ def get_args(argv):
             text_file = arg
         elif opt in ("-b", "--plano-bits"):
             bits_plan = int(arg)
+
     # print(get_args)
     # print(og_image, text_file, bits_plan, out_image)
     return [og_image, text_file, bits_plan, out_image]
