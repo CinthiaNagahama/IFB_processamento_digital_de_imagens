@@ -1,4 +1,5 @@
 import getopt
+import sys
 
 
 def print_help():
@@ -35,6 +36,15 @@ def get_args(argv):
             text_file = arg
         elif opt in ("-b", "--plano-bits"):
             bits_plan = int(arg)
+
+    if(og_image == out_image):
+        print(
+            "Aviso: nome da imagem de entrada é igual ao nome da imagem de saída. A imagem original será sobescrevida.\nContinuar mesmo assim? [Y/N]")
+        if(input().upper() == "N"):
+            sys.exit()
+
+    if(not isinstance(bits_plan, int) and (bits_plan < 0 or bits_plan > 4)):
+        raise ValueError("Plano de bits deve ser um valor inteiro entre 0 e 3")
 
     # print(get_args)
     # print(og_image, text_file, bits_plan, out_image)

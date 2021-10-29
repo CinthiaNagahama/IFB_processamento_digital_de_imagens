@@ -32,5 +32,7 @@ def get_args(argv):
         elif opt in ("-b", "--plano-bits"):
             bits_plan = int(arg)
 
+    if(not isinstance(bits_plan, int) and (bits_plan < 0 or bits_plan > 4)):
+        raise ValueError("Plano de bits deve ser um valor inteiro entre 0 e 3")
     # print([image, text_file, bits_plan])
     return [image, text_file, bits_plan]

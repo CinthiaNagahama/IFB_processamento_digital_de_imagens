@@ -22,7 +22,21 @@ def convert_to_binary(message):
 
 
 def convert_to_ascii(value):
-    return chr(int(value, 2))
+    if type(value) == int:
+        return chr(value)
+    elif type(value) == str:
+        return chr(int(value, 2))
+
+
+def show_images(name1, image1, name2, image2):
+    cv2.imshow(name1, image1)
+    cv2.imshow(name2, image2)
+
+    while cv2.getWindowProperty(name1, cv2.WND_PROP_VISIBLE) >= 1 and cv2.getWindowProperty(name2, cv2.WND_PROP_VISIBLE) >= 1:
+        keyCode = cv2.waitKey(50)
+        if (keyCode & 0xFF) == ord("q"):
+            cv2.destroyAllWindows()
+            break
 
 
 def save_image(out_image_name, new_image):
