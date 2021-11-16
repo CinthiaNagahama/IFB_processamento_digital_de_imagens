@@ -87,7 +87,7 @@ og_image = get_image(og_image_name)
 og_image = cv2.cvtColor(og_image, cv2.COLOR_BGR2RGB)
 ```
 
-No passo seguinte extrai-se a mensagem secreta do arquivo de texto e adiciona-se um demarcador, que servirá para indicar o fim da mensagem. Depois disso, converte-se a mensagem para binário com a função _convert_\__to_\__binary()_ mantendo um formato de 8 bits para cada caracter.
+No passo seguinte extrai-se a mensagem secreta do arquivo de texto e adiciona-se um delimitador, que servirá para indicar o fim da mensagem. Depois disso, converte-se a mensagem para binário com a função _convert_\__to_\__binary()_ mantendo um formato de 8 bits para cada caracter.
 
 ```python
 with open(text_file_name) as f:
@@ -158,7 +158,7 @@ def hide_message(image, bits_plan, message):
                     return new_image
 ```
 
-De volta a função _encode()_, converte-se ambas as imagens para o formato RGB para que se possa exibir ambas as imagens.
+De volta a função _encode()_, converte-se ambas as imagens para o formato BGR para que se possa exibir ambas as imagens.
 
 ```python
 og_image = cv2.cvtColor(og_image, cv2.COLOR_RGB2BGR)
@@ -185,7 +185,7 @@ print(f"canal modificado: {bits_plan} -> {canal[str(bits_plan)]}")
 
 <h2 id="decode"> 3. Decodificar </h2>
 
-Para decodificar uma mensagem escondida em uma imagem, foi criado o programa _decode.py_ que deve ser chamado com os seguintes argumentos: nome da imagem que foi modificada, nome do arquivo onde escrever a mensagem secreta e plano dde bits que foi alterado.
+Para decodificar uma mensagem escondida em uma imagem, foi criado o programa _decode.py_ que deve ser chamado com os seguintes argumentos: nome da imagem que foi modificada, nome do arquivo onde escrever a mensagem secreta e plano de bits que foi alterado.
 
 ```shell
 python3 decode.py -i <nome da imagem de entrada> -a <nome do arquivo de saída> -b <valor do plano de bits>
@@ -232,7 +232,7 @@ def find_message(image, bits_plan):
                 binary_data += rgb["2"][-1]
 ```
 
-Já na segunda parte é feita a conversão dados binários extraidos anteriormente. Primeiro separa-se os dados em conjuntos de tamanho 8, pois durante a codificação, for mantido um tamanho de 8 bits por caracter. Em seguida cada conjunto de 8 bits é transformado em um caracter ascii, até que se encontre o delimitador do final da mensagem.
+Já na segunda parte é feita a conversão dos dados binários extraídos anteriormente. Primeiro separa-se os dados em conjuntos de tamanho 8, pois, durante a codificação, foi mantido um tamanho de 8 bits por caracter. Em seguida cada conjunto de 8 bits é transformado em um caracter ASCII, até que se encontre o delimitador do final da mensagem.
 
 ```python
     binary_data = [binary_data[i: i + 8] for i in range(0, len(binary_data), 8)]
@@ -300,7 +300,7 @@ def get_args(argv):
     return [og_image, text_file, bits_plan, out_image]
 ```
 
-A função _get_\__args()_ utiliza a biblioteca _getopt_ para designar _flags_ e diferenciar os argumentos passados; dessa forma, a ordem em que os argumentos são passados não influencia em seus valores. Caso um argumento esteja faltando ou a sintaxe esteja incorreta uma mensagem de ajuda explicando cada _flag_ será mostrada no terminal.
+A função _get_\__args()_ utiliza a biblioteca _getopt_ para designar _flags_ e diferenciar os argumentos passados. Dessa forma, a ordem em que os argumentos são passados não influencia em seus valores. Caso um argumento esteja faltando ou a sintaxe esteja incorreta uma mensagem de ajuda explicando cada _flag_ será mostrada no terminal.
 
 ![help](images/ajuda.png "Imagem de teste: stinkbug. Mensagem de ajuda")
 
@@ -323,10 +323,10 @@ O programa _decode.py_ também tem passa por validações, contudo, elas são as
 
 Dos testes realizados com o programa, chegou-se a algumas conclusões:
 
-- Os programas foram testados com ambas imagens monocromáticas e coloridas, funcionando normalmente desde que possuam três canais de cores.
+- Os programas foram testados com ambas imagens monocromáticas e coloridas, funcionando normalmente desde que estas possuam três canais de cores.
 
-- Os programas podem gerar resultados inesperado caso a mensagem a se codificada/decoficada contenha caracteres especiais que necessitem de mais do que 8 bits quando convertidos para a tabela ASCII.
+- Os programas podem gerar resultados inesperado caso a mensagem a ser codificada/decoficada contenha caracteres especiais que necessitem de mais do que 8 bits quando convertidos para a tabela ASCII.
 
 - Os programas foram feitos tendo como base a tabela ASCII, logo outras formatações de texto podem gerar erros.
 
-- Os programa foram testados apenas com imagem de formato .png e arquivos de texto .txt, outros formatos de entrada/saída podem gerar erros.
+- Os programas foram testados apenas com imagem de formato .png e arquivos de texto .txt, outros formatos de entrada/saída podem gerar erros.
