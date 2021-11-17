@@ -18,7 +18,7 @@ def mean_absolute_error(og_image: np.ndarray, mod_image: np.ndarray) -> float:
     for og_line, mod_line in zip(og_image, mod_image):
         for og_pixel, mod_pixel in zip(og_line, mod_line):
             res += abs(int(og_pixel) - int(mod_pixel))
-    return res / og_image.shape[0] * og_image.shape[1]
+    return res / og_image.size
 
 
 def squares_difference_acc(og_image: np.ndarray, mod_image: np.ndarray) -> int:
@@ -30,7 +30,7 @@ def squares_difference_acc(og_image: np.ndarray, mod_image: np.ndarray) -> int:
 
 
 def mean_square_error(og_image: np.ndarray, mod_image: np.ndarray) -> float:
-    return squares_difference_acc(og_image, mod_image) / og_image.shape[0] * og_image.shape[1]
+    return squares_difference_acc(og_image, mod_image) / og_image.size
 
 
 def root_mean_square_error(og_image: np.ndarray, mod_image: np.ndarray) -> float:
@@ -50,7 +50,7 @@ def normalized_mean_square_error(og_image: np.ndarray, mod_image: np.ndarray) ->
 
 
 def peak_signal_to_noise_ratio(og_image: np.ndarray, mod_image: np.ndarray, max_L: int) -> float:
-    return 10 * math.log10((og_image.shape[0] * og_image.shape[1] * max_L * max_L) / squares_difference_acc(og_image, mod_image))
+    return 10 * math.log10((og_image.size * max_L * max_L) / squares_difference_acc(og_image, mod_image))
 
 
 def signal_to_noise_ratio(og_image: np.ndarray, mod_image: np.ndarray) -> float:
@@ -68,7 +68,7 @@ def covariance_aux(og_image: np.ndarray, mod_image: np.ndarray) -> float:
 
 
 def covariance(og_image: np.ndarray, mod_image: np.ndarray) -> float:
-    return covariance_aux(og_image, mod_image) / og_image.shape[0] * og_image.shape[1]
+    return covariance_aux(og_image, mod_image) / og_image.size
 
 
 def correlation_coeficient(og_image: np.ndarray, mod_image: np.ndarray) -> float:
@@ -92,7 +92,7 @@ def jaccard_coeficient(og_image: np.ndarray, mod_image: np.ndarray, tolerance: f
     for og_line, mod_line in zip(og_image, mod_image):
         for og_pixel, mod_pixel in zip(og_line, mod_line):
             res += int(similar(og_pixel, mod_pixel, tolerance))
-    return res / og_image.shape[0] * og_image.shape[1]
+    return res / og_image.size
 
 
 def quality_metrics(og_image: np.ndarray, mod_image: np.ndarray) -> Dict[str, Union[int, float]]:

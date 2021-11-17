@@ -1,8 +1,9 @@
 import math
+from cv2 import mean
 
 from numpy import number
 from utils import *
-from quality_mertics import quality_metrics
+from quality_metrics import quality_metrics
 
 if __name__ == "__main__":
     # 1- Utilizar a imagem da lena.jpg disponí­vel;
@@ -63,7 +64,7 @@ if __name__ == "__main__":
                 final_image_row.append(local_mean)
             final_image.append(final_image_row)
 
-        return np.array(final_image, dtype=np.uint8)
+        return np.array(final_image, dtype="uint8")
 
     # n2_image = pyramid_resize(og_image)
     # n4_image = pyramid_resize(n2_image)
@@ -72,24 +73,47 @@ if __name__ == "__main__":
     #             og_image, n2_image, n4_image, n8_image])
 
     # 7- Criar ruído gaussiano na lena;
-    def gaussian_noise(image: np.ndarray, mean: float = 0) -> np.ndarray:
+    def gaussian_noise(image: np.ndarray, mean: float = 0, sigma: float = 2) -> np.ndarray:
         row, col = image.shape
-        sigma = 0.1
 
         rng = np.random.default_rng()
         gauss = mean + sigma * rng.standard_normal(size=(row, col))
-        gauss = gauss.reshape(row, col)
-        noisy_image = np.add(image, gauss)
+        gauss = np.array(gauss.reshape(row, col), dtype="uint8")
+        noisy_image = np.add(image, np.abs(gauss))
 
         return noisy_image
 
-    noisy_image = gaussian_noise(og_image)
-    noisy_image = cv2.convertScaleAbs(noisy_image)
-    show_images(["Original", "Gaussian Noise"], [og_image, noisy_image])
+    noisy_image = gaussian_noise(og_image, mean=0, sigma=5)
+    cv2.imwrite("lena_com_ruido.jpg", noisy_image)
 
     # 8- Calcular entropia da lena original e lena com ruí­do;
     def entropy(image: np.ndarray) -> float:
-        pass
+        p = np.histogramdd(np.ravel(image), bins=256)[0]/image.size
+        p = list(filter(lambda p: p > 0, np.ravel(p)))
+        return -np.sum(np.multiply(p, np.log2(p)))
+
+    print(f"Entropia da imagem original: {entropy(og_image)}")
+    print(f"Entropia da imagem com ruído: {entropy(noisy_image)}")
 
     # 9- Achar diferença entre lena original e lena modificada, criando uma outra imagem binária (preto = 0 e branco = 255) em que branco estão os pixels diferentes entre as "lenas";
+    def dif_binary_image(image1: np.ndarray, image2: np.ndarray) -> np.ndarray:
+        res = np.zeros(image1.shape, dtype="uint8")
+
+        for x, (line1, line2) in enumerate(zip(image1, image2)):
+            for y, (pixel1, pixel2) in enumerate(zip(line1, line2)):
+                res[x][y] = 255 if pixel1 == pixel2 else 0
+        return res
+
+    dif = dif_binary_image(og_image, noisy_image)
+    cv2.imwrite("diferenca_lenas_ruido.jpg", dif)
+
+    mod_image = cv2.imread("lena_modificada.jpg", 0)
+    dif = dif_binary_image(og_image, mod_image)
+    cv2.imwrite("diferenca_lenas_modificada.jpg", dif)
+
     # 10- Contar quantos objetos conexos existem na nova imagem utilizando vizinhança-4 e vizinhança-8;
+    res = cv2.connectedComponentsWithStats(dif, 4, cv2.CV_32S)
+    print(f"Quantidade de objetos conexos em vizinhança-4: {res[0]}")
+
+    res = cv2.connectedComponentsWithStats(dif, 8, cv2.CV_32S)
+    print(f"Quantidade de objetos conexos em vizinhança-8: {res[0]}")
